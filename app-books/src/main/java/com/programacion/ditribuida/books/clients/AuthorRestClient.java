@@ -7,10 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import java.util.List;
 
@@ -19,10 +16,10 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/authors")
+@RegisterRestClient(configKey = "AuthorRestClient")
 public interface AuthorRestClient {
-
 
     @GET
     @Path("/find/{isbn}")
-    public List<AuthorDTO> findByBook(@PathParam("isbn") String isbn) ;
+    List<AuthorDTO> findByBook(@PathParam("isbn") String isbn) ;
 }

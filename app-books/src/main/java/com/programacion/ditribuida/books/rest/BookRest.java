@@ -3,13 +3,12 @@ package com.programacion.ditribuida.books.rest;
 import com.programacion.ditribuida.books.clients.AuthorRestClient;
 import com.programacion.ditribuida.books.dto.BookDTO;
 import com.programacion.ditribuida.books.repo.BookRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -25,16 +24,18 @@ public class BookRest {
     @Inject
     ModelMapper mapper;
 
+    @Inject
+    @RestClient
     AuthorRestClient client;
 
-    @PostConstruct
-    void init(){
-        var authorServer = "http://localhost:8070";
-
-        client = RestClientBuilder.newBuilder()
-                .baseUri(authorServer)
-                .build(AuthorRestClient.class);
-    }
+//    @PostConstruct
+//    void init(){
+//        var authorServer = "http://localhost:8070";
+//
+//        client = RestClientBuilder.newBuilder()
+//                .baseUri(authorServer)
+//                .build(AuthorRestClient.class);
+//    }
 
     @GET
     @Path("/{isbn}")
@@ -42,9 +43,10 @@ public class BookRest {
 
         return bookRepository.findByIdOptional(isbn)
                 .map(book -> {
+                    System.out.println("Buscando autores para el libro con ISBN: " + isbn);
                     var authors = client.findByBook(isbn);
-
                     var dto = new BookDTO();
+
                     mapper.map(book, dto);
                     dto.setAuthors(authors);
                     return Response.ok(dto).build();
@@ -81,11 +83,12 @@ public class BookRest {
                 .map(book -> {
                             BookDTO dto = new BookDTO();
                             mapper.map(book, dto);
-                            dto.setAuthors(List.of());
                             return dto;
                         }
                 ).map(book -> {
+                            var authors = client.findByBook(book.getIsbn());
                             book.setAuthors(List.of());
+                            book.setAuthors(authors);
                             return book;
                         }
                 ).toList();

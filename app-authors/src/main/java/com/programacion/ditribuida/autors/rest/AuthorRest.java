@@ -23,7 +23,7 @@ public class AuthorRest {
     AuthorRepo authorRepo;
 
     @Inject
-    @ConfigProperty(name= "quarkus.http.port")
+    @ConfigProperty(name = "quarkus.http.port")
     Integer httpPort;
 
     @GET
@@ -36,7 +36,7 @@ public class AuthorRest {
     public Response findById(@PathParam("id") Integer id) {
 
         return authorRepo.findByIdOptional(id)
-                .map(obj->{
+                .map(obj -> {
                     obj.setName(obj.getName() + " - " + httpPort);
                     return obj;
                 })
@@ -49,7 +49,7 @@ public class AuthorRest {
     @Path("/find/{isbn}")
     public List<Author> findByBook(@PathParam("isbn") String isbn) {
         return authorRepo.findByBook(isbn).stream()
-                .map(obj->{
+                .map(obj -> {
                     var newName = String.format("%s - %s", obj.getName(), httpPort);
                     obj.setName(newName);
                     return obj;
@@ -61,9 +61,7 @@ public class AuthorRest {
     public String test() {
         Config config = ConfigProvider.getConfig();
         config.getConfigSources()
-                .forEach(obj->{
-                    System.out.printf("%d ->s \n", obj.getOrdinal(),obj.getName());
-                });
+                .forEach(obj -> System.out.printf("%d ->s \n", obj.getOrdinal(), obj.getName()));
 
         return "ok";
     }
