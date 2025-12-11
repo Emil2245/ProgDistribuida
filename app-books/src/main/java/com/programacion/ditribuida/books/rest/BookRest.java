@@ -3,6 +3,10 @@ package com.programacion.ditribuida.books.rest;
 import com.programacion.ditribuida.books.clients.AuthorRestClient;
 import com.programacion.ditribuida.books.dto.BookDTO;
 import com.programacion.ditribuida.books.repo.BookRepository;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.stork.Stork;
+import io.smallrye.stork.api.Service;
+import io.smallrye.stork.api.ServiceInstance;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -12,6 +16,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Path("/books")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -27,6 +34,8 @@ public class BookRest {
     @Inject
     @RestClient
     AuthorRestClient client;
+
+    AtomicInteger index = new AtomicInteger(0);
 
 //    @PostConstruct
 //    void init(){
@@ -92,6 +101,42 @@ public class BookRest {
                             return book;
                         }
                 ).toList();
+    }
+
+    @GET
+    @Path("/test")
+    public Response test() {
+        Stork stork = Stork.getInstance();
+
+
+        //--------------------- imprimir el contenido del registro:
+        Map<String, Service> services = stork.getServices();
+
+        services.entrySet().forEach(it -> {
+            String key = it.getKey();
+            Service service = it.getValue();
+            System.out.println("--grupo: " + key);
+            Multi<ServiceInstance> instances = service.getInstances()
+                    .onItem()
+                    .transformToMulti(items -> Multi.createFrom()
+                            .iterable(items));
+
+//            instances.subscribe().with(item -> {
+//                System.out.println("   -> instancia: " + item.getHost() + ":" + item.getPort());
+//            });
+
+        });
+        //--------------------- buscar un servico, seleccionar instancia, balancear:
+
+        Service service = stork.getService("authors-api");
+        List<ServiceInstance> instances = service.getInstances().await().indefinitely();
+
+        int curlIndex = index.getAndIncrement() % instances.size();
+        var instancia = instances.get(curlIndex);
+        System.out.println("   -> instancia: " + instancia.getHost() + ":" + instancia.getPort());
+
+
+        return Response.ok("ok").build();
     }
 
 }

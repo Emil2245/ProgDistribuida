@@ -16,7 +16,8 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/authors")
-@RegisterRestClient(configKey = "AuthorRestClient")
+//@RegisterRestClient(configKey = "AuthorRestClient")
+@RegisterRestClient(baseUri = "stork://authors-api")
 public interface AuthorRestClient {
 
     @GET
