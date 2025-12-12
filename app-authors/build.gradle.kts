@@ -15,13 +15,23 @@ java {
 }
 dependencies {
     implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:${quarkusVersion}"))
+    implementation("io.quarkus:quarkus-arc")
+
+    //DB
     implementation("io.quarkus:quarkus-hibernate-orm")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
-    implementation("io.quarkus:quarkus-arc")
 
+    //REST
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
+
+
+    //SERVICE DISCOVERY - STORK
+    implementation("io.quarkus:quarkus-smallrye-stork")
+    implementation("io.smallrye.stork:stork-service-discovery-consul")
+    implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client")
+
 }
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

@@ -33,7 +33,9 @@ dependencies {
 
 //SERVICE DISCOVERY - STORK
     implementation("io.quarkus:quarkus-smallrye-stork")
-    implementation("io.smallrye.stork:stork-service-discovery-static-list")
+//    implementation("io.smallrye.stork:stork-service-discovery-static-list")
+    implementation("io.smallrye.stork:stork-service-discovery-consul")
+    implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client")
 }
 
 tasks.withType<JavaCompile> {
