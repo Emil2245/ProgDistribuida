@@ -43,7 +43,7 @@ public class AuthorsLifecycle {
 
             ConsulClient client = ConsulClient.create(vertx, options);
 
-            var tags = List.of("traefik.enable= true",
+            var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.authors.rule=PathPrefix(`/app-authors`)",
                     "traefik.http.middlewares.authors-stripprefix.stripPrefix.prefixes=/app-authors",
                     "traefik.http.routers.authors.middlewares=authors-stripprefix"

@@ -42,7 +42,7 @@ public class BooksLifecycle {
             var urlcheck = String.format("http://%s:%d/ping", ipAddress, appPort);
             var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("10s");
 
-            var tags = List.of("traefik.enable= true",
+            var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.books.rule=PathPrefix(`/app-books`)",
                     "traefik.http.middlewares.books-stripprefix.stripPrefix.prefixes=/app-books",
                     "traefik.http.routers.books.middlewares=books-stripprefix"
