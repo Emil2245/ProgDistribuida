@@ -9,21 +9,20 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class AppRecommendMain {
-    private final ChatModel chatmodel;
-
-    public AppRecommendMain(ChatModel chatmodel) {
-        this.chatmodel = chatmodel;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(AppRecommendMain.class, args);
     }
-    @Bean
-    public CommandLineRunner commandLineRunner(ChatModel chatmodel, BooksAiService booksAiService) {
-        return (String... args) -> {
-            System.out.println(chatmodel);
 
-            var res = booksAiService.recomendar("El Quijote");
+    @Bean
+    public CommandLineRunner commandLineRunner(
+            ChatModel chatModel,
+            BooksAiService booksAiService
+    ) {
+        return args -> {
+            System.out.println(chatModel);
+
+            var res = booksAiService.recommend("El Quijote");
             System.out.println("Recomendacion: " + res);
         };
     }
