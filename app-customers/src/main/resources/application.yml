@@ -1,0 +1,22 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: app-customers
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: customer_user
+    password: secure_password
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        tags:
+          -framework=spring-boot-4.0.1
+          -traefik.enable=true
+          -traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)
+          -traefik.http.middlewares.app-customers-stripprefix.stripprefix.prefixes=/app-customers
+          -traefik.http.routers.customers.middlewares=app-customers-stripprefix
+
+

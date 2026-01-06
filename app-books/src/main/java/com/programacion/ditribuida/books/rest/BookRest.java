@@ -1,6 +1,7 @@
 package com.programacion.ditribuida.books.rest;
 
 import com.programacion.ditribuida.books.clients.AuthorRestClient;
+import com.programacion.ditribuida.books.clients.CustomersRestClient;
 import com.programacion.ditribuida.books.dto.BookDTO;
 import com.programacion.ditribuida.books.repo.BookRepository;
 import io.smallrye.mutiny.Multi;
@@ -17,7 +18,6 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Path("/books")
@@ -33,7 +33,10 @@ public class BookRest {
 
     @Inject
     @RestClient
-    AuthorRestClient client;
+    AuthorRestClient authorRestClient;
+    @Inject
+    @RestClient
+    CustomersRestClient customersRestClient;
 
     AtomicInteger index = new AtomicInteger(0);
 
@@ -45,6 +48,11 @@ public class BookRest {
 //                .baseUri(authorServer)
 //                .build(AuthorRestClient.class);
 //    }
+    @GET
+    @Path("/test2")
+    public List<Object> test2() {
+        return  customersRestClient.findAll();
+    }
 
     @GET
     @Path("/{isbn}")
@@ -53,7 +61,7 @@ public class BookRest {
         return bookRepository.findByIdOptional(isbn)
                 .map(book -> {
                     System.out.println("Buscando autores para el libro con ISBN: " + isbn);
-                    var authors = client.findByBook(isbn);
+                    var authors = authorRestClient.findByBook(isbn);
                     var dto = new BookDTO();
 
                     mapper.map(book, dto);
@@ -95,7 +103,7 @@ public class BookRest {
                             return dto;
                         }
                 ).map(book -> {
-                            var authors = client.findByBook(book.getIsbn());
+                            var authors = authorRestClient.findByBook(book.getIsbn());
                             book.setAuthors(List.of());
                             book.setAuthors(authors);
                             return book;
