@@ -1,7 +1,7 @@
 #
 # Archivo para crear la imagen
-# docker build -f src/main/docker/Dockerfile -t app-authors .
-#
+# docker build -f src/main/docker/Dockerfile.jvm -t emil2245/app-authors .
+# docker push emil2245/app-authors
 #
 
 

@@ -1,0 +1,21 @@
+#
+# Archivo para crear la imagen
+# docker build -f Dockerfile.jvm -t emil2245/app-customers .
+# docker push emil2245/app-customers
+#
+
+
+
+# entorno que va
+FROM eclipse-temurin:21.0.9_10-jre-alpine-3.23
+
+ENV LANGUAGE='en_US:en'
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY build/libs/demo.jar app.jar
+
+CMD ["java", "-jar", "app.jar"]
+
+

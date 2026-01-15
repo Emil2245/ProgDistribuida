@@ -5,8 +5,8 @@ spring:
     name: app-customers
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: customer_user
-    password: secure_password
+    username: postgres
+    password: root
   cloud:
     consul:
       host: localhost

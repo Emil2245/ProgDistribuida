@@ -26,6 +26,12 @@ dependencies {
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
 
+    //flyway
+    implementation("io.quarkus:quarkus-flyway")
+    implementation("org.flywaydb:flyway-database-postgresql")
+
+    //docker
+    implementation("io.quarkus:quarkus-container-image-docker")
 
     //SERVICE DISCOVERY - STORK
     implementation("io.quarkus:quarkus-smallrye-stork")

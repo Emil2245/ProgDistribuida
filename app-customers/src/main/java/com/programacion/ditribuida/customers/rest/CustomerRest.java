@@ -26,7 +26,7 @@ public class CustomerRest {
         return repo.findAll().stream()
                 .map(customer -> {
                     // Map de ordenes de compra a DTO
-                    var purchaseOrders = customer.getPurcharseOrder().stream()
+                    var purchaseOrders = customer.getPurcharseOrders().stream()
                             .map(po -> PurcharseOrderDto.builder()
                                     .id(po.getId())
                                     .placedOn(po.getPlacedOn())

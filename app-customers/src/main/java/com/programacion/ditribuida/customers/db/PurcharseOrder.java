@@ -19,9 +19,7 @@ public class PurcharseOrder {
     private LocalDate deliveredOn;
     private BigDecimal total;
 
-    @JoinColumn(name = "id")
     @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
-
-
 }
