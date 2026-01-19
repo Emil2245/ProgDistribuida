@@ -12,6 +12,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @ApplicationScoped
@@ -26,6 +27,8 @@ public class AuthorRest {
     @ConfigProperty(name = "quarkus.http.port")
     Integer httpPort;
 
+    AtomicInteger index = new AtomicInteger(0);
+
     @GET
     public List<Author> findAll() {
         return authorRepo.listAll();
@@ -34,6 +37,12 @@ public class AuthorRest {
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Integer id) {
+        int valor = index.getAndIncrement();
+        if (valor%5!=0){
+            String msg = String.format("Simulando fallo %d ....", valor);
+            System.out.println("autor****************************************");
+            throw new RuntimeException("Error en el sistema");
+        }
 
         return authorRepo.findByIdOptional(id)
                 .map(obj -> {

@@ -30,6 +30,8 @@ dependencies {
     //docker
     implementation("io.quarkus:quarkus-container-image-docker")
 
+    //reciliencia
+    implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
 
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
