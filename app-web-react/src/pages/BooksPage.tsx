@@ -15,6 +15,7 @@ import {
 import {useNavigate} from "react-router-dom";
 
 import type {Book} from "../model/Book.ts";
+import { apiUrl } from "../config/api.ts";
 
 export default function BooksPage() {
     const [books, setBooks] = useState<Book[]>([]);
@@ -26,7 +27,7 @@ export default function BooksPage() {
         setLoading(true);
         try {
             const response = await axios.get<Book[]>(
-                "http://localhost:8080/books"
+                apiUrl("/books")
             );
             setBooks(response.data);
         } catch (error) {

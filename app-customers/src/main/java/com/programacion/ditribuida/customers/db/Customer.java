@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.processing.Generated;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,11 +13,12 @@ import java.util.List;
 @Setter
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
     private String name;
     private String email;
+    private Integer version;
 
     @OneToMany(mappedBy = "customer")
-    private List<PurcharseOrder> purcharseOrders;
+    private List<PurcharseOrder> purcharseOrders = new ArrayList<>();
 }

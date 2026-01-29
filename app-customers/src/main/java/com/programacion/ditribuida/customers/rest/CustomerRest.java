@@ -31,6 +31,7 @@ public class CustomerRest {
                                     .id(po.getId())
                                     .placedOn(po.getPlacedOn())
                                     .deliveredOn(po.getDeliveredOn())
+                                    .status(po.getStatus())
                                     .total(po.getTotal())
                                     .build()
                             )
@@ -41,7 +42,8 @@ public class CustomerRest {
                             .id(customer.getId())
                             .name(customer.getName())
                             .email(customer.getEmail())
-//                                .purcharseOrders(purchaseOrders)
+                            .version(customer.getVersion())
+                            .purchaseOrders(purchaseOrders)
                             .build();
                 })
                 .toList();

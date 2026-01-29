@@ -1,4 +1,4 @@
-package com.programacion.ditribuida.customers.dto;
+package com.programacion.distribuida.recommend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookRecDto {
 
-    private Integer id;
     private String titulo;
     private String isbn;
     private String editorial;
     private String descripcion;
-
 
 }

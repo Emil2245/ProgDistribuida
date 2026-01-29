@@ -41,6 +41,9 @@ dependencies {
 //    implementation("io.smallrye.stork:stork-service-discovery-static-list")
     implementation("io.smallrye.stork:stork-service-discovery-consul")
     implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client")
+
+    // health (MicroProfile / SmallRye)
+    implementation("io.quarkus:quarkus-smallrye-health")
 }
 
 tasks.withType<JavaCompile> {

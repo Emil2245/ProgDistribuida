@@ -1,24 +1,18 @@
 package com.programacion.ditribuida.customers.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Entity
-@Getter
 @Builder
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class PurcharseOrderDto {
-    @Id
-    private Integer id;
-    private LocalDate placedOn;
-    private LocalDate deliveredOn;
-    private BigDecimal total;
+    private Long id;
+    private LocalDateTime placedOn;
+    private LocalDateTime deliveredOn;
+    private Integer status;
+    private Integer total;
 
 }

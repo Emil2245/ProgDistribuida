@@ -15,6 +15,7 @@ public class ConsulConfig {
                         List.of(
                                 "traefik.enable=true",
                                 "traefik.http.routers.customers.rule=PathPrefix(`/app-customers`)",
+                                "traefik.http.routers.customers.priority=10",
                                 "traefik.http.middlewares.customers-stripprefix.stripPrefix.prefixes=/app-customers",
                                 "traefik.http.routers.customers.middlewares=customers-stripprefix"
                         )

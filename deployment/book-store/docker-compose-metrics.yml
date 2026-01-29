@@ -17,7 +17,7 @@ services:
     expose:
         - 9187
 
-  graphana:
+  grafana:
     image: grafana/grafana-oss:latest
     ports:
       - 3000:3000
@@ -49,6 +49,7 @@ services:
     ports:
       - 8888:8080
       - 8080:80
+      - 8082:8082
     depends_on:
       - consul
       - prometheus
@@ -76,8 +77,8 @@ services:
       SPRING_CLOUD_CONSUL_PORT: 8500
     expose:
       - 8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - prometheus
@@ -97,8 +98,8 @@ services:
       - 8080
     ports:
       - 8889:8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - prometheus
@@ -119,8 +120,8 @@ services:
       - 8080
 #    ports:
 #      - 8889:8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - prometheus
@@ -135,14 +136,14 @@ services:
 #    depends_on:
 #      - consul
 
-#  react:
-#    image: emil2245/app-web-react
-#    expose:
-#      - 80
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.react.rule=PathPrefix(`/`)"
-#      - "traefik.http.routers.react.entrypoints=web"
-#      - "traefik.http.routers.react.priority=1"
-#      - "traefik.http.services.react.loadbalancer.server.port=80"
+  react:
+    image: emil2245/app-web-react
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.react.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.react.entrypoints=web"
+      - "traefik.http.routers.react.priority=1"
+      - "traefik.http.services.react.loadbalancer.server.port=80"
 

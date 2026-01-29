@@ -1,6 +1,6 @@
 package com.programacion.distribuida.recommend.servicios;
 
-import com.programacion.ditribuida.customers.dto.BookRecDto;
+import com.programacion.distribuida.recommend.dto.BookRecDto;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,8 @@ public class BooksAiServiceImpl implements BooksAiService {
                     }
                 ]
                 No incluyas ningun texto alternativo o adicional fuera del json.
-                """.formatted(title);
+                """
+                .formatted(title);
 
         return chatClient.prompt()
                 .user(userSpec -> userSpec.text(promptText))

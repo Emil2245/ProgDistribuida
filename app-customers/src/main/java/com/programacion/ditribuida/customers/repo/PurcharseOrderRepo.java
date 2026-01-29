@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Transactional
 public
-interface PurcharseOrderRepo extends JpaRepository<PurcharseOrder, Integer> {
+interface PurcharseOrderRepo extends JpaRepository<PurcharseOrder, Long> {
 }

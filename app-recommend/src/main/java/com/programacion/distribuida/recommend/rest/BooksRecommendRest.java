@@ -1,7 +1,7 @@
 package com.programacion.distribuida.recommend.rest;
 
 import com.programacion.distribuida.recommend.servicios.BooksAiService;
-import com.programacion.ditribuida.customers.dto.BookRecDto;
+import com.programacion.distribuida.recommend.dto.BookRecDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,4 +23,3 @@ public class BooksRecommendRest {
         return booksAiService.recommend(title);
     }
 }
-

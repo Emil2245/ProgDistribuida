@@ -4,20 +4,24 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "purcharse_order")
+@Table(name = "purchase_order")
 @Getter
 @Setter
 public class PurcharseOrder {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private LocalDate placedOn;
-    private LocalDate deliveredOn;
-    private BigDecimal total;
+    private Long id;
+
+    @Column(name = "placedon")
+    private LocalDateTime placedOn;
+
+    @Column(name = "deliveredon")
+    private LocalDateTime deliveredOn;
+
+    private Integer status;
+    private Integer total;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)

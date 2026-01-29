@@ -1,22 +1,19 @@
 package com.programacion.ditribuida.customers.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
     private String email;
-    
-//    @OneToMany(mappedBy = "customer")
-//    private List<PurcharseOrder> purcharseOrder;
+    private Integer version;
+
+    private List<PurcharseOrderDto> purchaseOrders;
 
 }

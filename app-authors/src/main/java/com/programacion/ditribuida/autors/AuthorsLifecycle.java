@@ -38,20 +38,29 @@ public class AuthorsLifecycle {
                     .setPort(consulPort);
 
             var ipAddress = InetAddress.getLocalHost().getHostAddress();
-            var urlcheck = String.format("http://%s:%d/ping", ipAddress, appPort);
-            var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("10s");
+            // Readiness real (DB + app) para routing y escalado horizontal vía
+            // Consul/Traefik
+            var urlcheck = String.format("http://%s:%d/q/health/ready", ipAddress, appPort);
+            var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("1m");
 
             ConsulClient client = ConsulClient.create(vertx, options);
 
             var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.authors.rule=PathPrefix(`/app-authors`)",
+                    // Importante: el router de React es PathPrefix(`/`) con priority=1.
+                    // Si no subimos la prioridad aquí, Traefik puede enviar /app-authors al
+                    // frontend.
+                    "traefik.http.routers.authors.priority=10",
                     "traefik.http.middlewares.authors-stripprefix.stripPrefix.prefixes=/app-authors",
-                    "traefik.http.routers.authors.middlewares=authors-stripprefix"
-            );
+                    "traefik.http.routers.authors.middlewares=authors-stripprefix");
+
+            // Necesario para escalado horizontal: el serviceId debe ser único por instancia
+            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
+            String serviceId = "app-authors-" + hostname + "-" + appPort;
 
             ServiceOptions serviceOptions = new ServiceOptions()
                     .setName("app-authors")
-                    .setId("app-authors-" + appPort)
+                    .setId(serviceId)
                     .setAddress(ipAddress)
                     .setPort(appPort)
                     .setCheckOptions(checkOptions)
@@ -75,7 +84,9 @@ public class AuthorsLifecycle {
 
             ConsulClient client = ConsulClient.create(vertx, options);
 
-            String serviceId = "app-authors-" + appPort;
+            var ipAddress = InetAddress.getLocalHost().getHostAddress();
+            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
+            String serviceId = "app-authors-" + hostname + "-" + appPort;
 
             client.deregisterService(serviceId).onSuccess(it -> {
                 System.out.println("Service deregistered: " + serviceId);

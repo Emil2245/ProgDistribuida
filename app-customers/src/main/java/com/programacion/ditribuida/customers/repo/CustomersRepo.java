@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Transactional
-public interface CustomersRepo extends JpaRepository<Customer, Integer> {
+public interface CustomersRepo extends JpaRepository<Customer, Long> {
 }

@@ -14,10 +14,11 @@ import {
 import {useLocation, useNavigate} from "react-router-dom";
 
 import type {Book} from "../model/Book.ts";
+import { apiUrl } from "../config/api.ts";
 
 export default function BooksDetallePage() {
 
-    const url = "http://localhost:8080/books";
+    const url = apiUrl("/books");
 
     const location = useLocation();
     const navigate = useNavigate();

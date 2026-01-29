@@ -1,6 +1,6 @@
 package com.programacion.distribuida.recommend.servicios;
 
-import com.programacion.ditribuida.customers.dto.BookRecDto;
+import com.programacion.distribuida.recommend.dto.BookRecDto;
 
 import java.util.List;
 

@@ -18,7 +18,6 @@ import java.util.List;
 @ApplicationScoped
 public class BooksLifecycle {
 
-
     @Inject
     @ConfigProperty(name = "consul.host", defaultValue = "localhost")
     String consulHost;
@@ -39,20 +38,28 @@ public class BooksLifecycle {
                     .setPort(consulPort);
 
             var ipAddress = InetAddress.getLocalHost().getHostAddress();
-            var urlcheck = String.format("http://%s:%d/ping", ipAddress, appPort);
-            var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("10s");
+            // Readiness real (DB + app) para routing y escalado horizontal vía
+            // Consul/Traefik
+            var urlcheck = String.format("http://%s:%d/q/health/ready", ipAddress, appPort);
+            var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("1m");
 
             var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.books.rule=PathPrefix(`/app-books`)",
+                    // Importante: el router de React es PathPrefix(`/`) con priority=1.
+                    // Si no subimos la prioridad aquí, Traefik puede enviar /app-books al frontend.
+                    "traefik.http.routers.books.priority=10",
                     "traefik.http.middlewares.books-stripprefix.stripPrefix.prefixes=/app-books",
-                    "traefik.http.routers.books.middlewares=books-stripprefix"
-            );
+                    "traefik.http.routers.books.middlewares=books-stripprefix");
 
             ConsulClient client = ConsulClient.create(vertx, options);
 
+            // Necesario para escalado horizontal: el serviceId debe ser único por instancia
+            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
+            String serviceId = "app-books-" + hostname + "-" + appPort;
+
             ServiceOptions serviceOptions = new ServiceOptions()
                     .setName("app-books")
-                    .setId("app-books-" + appPort)
+                    .setId(serviceId)
                     .setAddress(ipAddress)
                     .setPort(appPort)
                     .setCheckOptions(checkOptions)
@@ -78,7 +85,9 @@ public class BooksLifecycle {
 
             ConsulClient client = ConsulClient.create(vertx, options);
 
-            String serviceId = "app-books-" + appPort;
+            var ipAddress = InetAddress.getLocalHost().getHostAddress();
+            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
+            String serviceId = "app-books-" + hostname + "-" + appPort;
 
             client.deregisterService(serviceId)
                     .onSuccess(it -> {
@@ -92,5 +101,3 @@ public class BooksLifecycle {
         }
     }
 }
-
-

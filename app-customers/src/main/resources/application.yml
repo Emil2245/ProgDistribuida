@@ -12,11 +12,21 @@ spring:
       host: localhost
       port: 8500
       discovery:
-        tags:
-          -framework=spring-boot-4.0.1
+        health-check-path: /actuator/health/readiness
+        health-check-interval: 10s
+        tags: -framework=spring-boot-4.0.1
           -traefik.enable=true
           -traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)
           -traefik.http.middlewares.app-customers-stripprefix.stripprefix.prefixes=/app-customers
           -traefik.http.routers.customers.middlewares=app-customers-stripprefix
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always

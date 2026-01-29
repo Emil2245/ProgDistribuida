@@ -48,8 +48,8 @@ services:
       SPRING_CLOUD_CONSUL_PORT: 8500
     expose:
       - 8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - consul
@@ -68,8 +68,8 @@ services:
       - 8080
 #    ports:
 #      - 8888:8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - consul
@@ -89,8 +89,8 @@ services:
       - 8080
 #    ports:
 #      - 8889:8080
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     depends_on:
       - dbserver
       - consul
@@ -111,6 +111,5 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.react.rule=PathPrefix(`/`)"
       - "traefik.http.routers.react.entrypoints=web"
-      # ESTO ES LO MÁS IMPORTANTE:
       - "traefik.http.routers.react.priority=1"
       - "traefik.http.services.react.loadbalancer.server.port=80"
