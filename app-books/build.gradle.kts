@@ -44,6 +44,9 @@ dependencies {
 
     // health (MicroProfile / SmallRye)
     implementation("io.quarkus:quarkus-smallrye-health")
+
+    //kubernetes
+    implementation("io.quarkus:quarkus-kubernetes")
 }
 
 tasks.withType<JavaCompile> {

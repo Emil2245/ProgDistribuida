@@ -1,0 +1,75 @@
+#deployment for app-authors
+apiVersion: autoscaling/v1
+kind: Deployment
+metadata:
+  name: app-authors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-authors
+  template:
+    metadata:
+      labels:
+        app: app-authors
+    spec:
+      containers:
+        - name: app-authors
+          image: emil2245/app-authors:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: jdbc:postgresql://postgresq:5432/distribuida
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: postgres
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: postgres
+            - name: QUARKUS_HTTP_PORT
+              value: "8080"
+            - name: CONSUL_HOST
+              value: consul
+            - name: CONSUL_PORT
+              value: "8500"
+            - name: QUARKUS_FLYWAY_MIGRATE_AT_START
+              value: "true"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+#-----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-authors-service
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+    ports:
+      - protocol: TCP
+      - port: 8080
+        targetPort: 8080
+#------
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app-authors-hpa
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app-authors
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+            type: Utilization
+            averageUtilization: 50
