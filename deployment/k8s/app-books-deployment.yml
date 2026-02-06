@@ -1,24 +1,25 @@
-# App Authors (Quarkus) - Deployment + Service
+# App Books (Quarkus) - Deployment + Service
+# Depende de postgresq y (para autores/clientes) de Consul o URLs estáticas
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-authors
+  name: app-books
   namespace: book-store
   labels:
-    app: app-authors
+    app: app-books
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-authors
+      app: app-books
   template:
     metadata:
       labels:
-        app: app-authors
+        app: app-books
     spec:
       containers:
-        - name: app-authors
-          image: emil2245/app-authors:latest
+        - name: app-books
+          image: emil2245/app-books:latest
           ports:
             - containerPort: 8080
           env:
@@ -36,8 +37,12 @@ spec:
               value: "consul"
             - name: CONSUL_PORT
               value: "8500"
-            - name: QUARKUS_FLYWAY_MIGRATE_AT_START
-              value: "true"
+            # Orígenes CORS: URL del frontend React (Route en OpenShift) para que el navegador permita llamadas.
+            - name: CORS_ORIGINS
+              value: ""   # Ej.: https://react-book-store.<proyecto>.apps.<cluster>
+            # URL directa a authors si no usas Consul (descomenta y comenta CONSUL_*):
+            # - name: AUTHORS_URL
+            #   value: "http://app-authors:8080"
           resources:
             requests:
               memory: "256Mi"
@@ -61,39 +66,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-authors
+  name: app-books
   namespace: book-store
 spec:
   type: ClusterIP
   selector:
-    app: app-authors
+    app: app-books
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: app-authors-hpa
-  namespace: book-store
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: app-authors
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80

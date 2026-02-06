@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class PurcharseOrder {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "placedon")
@@ -23,7 +24,7 @@ public class PurcharseOrder {
     private Integer status;
     private Integer total;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 }

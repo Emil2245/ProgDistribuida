@@ -1,4 +1,6 @@
+-- USE distribuida;
 -- TABLE: author
+
 CREATE TABLE author (
                         id BIGINT PRIMARY KEY,
                         name VARCHAR(255),

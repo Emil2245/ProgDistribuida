@@ -1,0 +1,48 @@
+# Consul (opcional) - para service discovery entre authors, books y customers
+# Si no lo desplegás, en app-books podés usar descubrimiento estático (AUTHORS_URL, etc.)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consul
+  namespace: book-store
+  labels:
+    app: consul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consul
+  template:
+    metadata:
+      labels:
+        app: consul
+    spec:
+      containers:
+        - name: consul
+          image: consul:1.15.4
+          command:
+            - agent
+            - -dev
+            - -ui
+            - -bind=0.0.0.0
+            - -client=0.0.0.0
+          ports:
+            - containerPort: 8500
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul
+  namespace: book-store
+spec:
+  type: ClusterIP
+  selector:
+    app: consul
+  ports:
+    - protocol: TCP
+      port: 8500
+      targetPort: 8500

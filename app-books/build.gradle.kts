@@ -45,6 +45,9 @@ dependencies {
     // health (MicroProfile / SmallRye)
     implementation("io.quarkus:quarkus-smallrye-health")
 
+    // métricas Prometheus (/q/metrics)
+    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+
     //kubernetes
     implementation("io.quarkus:quarkus-kubernetes")
 }

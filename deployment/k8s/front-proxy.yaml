@@ -1,0 +1,86 @@
+# Proxy único: sirve React en / y reenvía /books al backend app-books.
+# La infra solo expone este servicio + Grafana (2 Routes).
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: front-proxy-nginx
+  namespace: book-store
+data:
+  nginx.conf: |
+    events { worker_connections 1024; }
+    http {
+      upstream react { server app-react:80; }
+      upstream books { server app-books:8080; }
+      server {
+        listen 80;
+        location /books {
+          proxy_pass http://books;
+          proxy_http_version 1.1;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location / {
+          proxy_pass http://react;
+          proxy_http_version 1.1;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-proxy
+  namespace: book-store
+  labels:
+    app: front-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-proxy
+  template:
+    metadata:
+      labels:
+        app: front-proxy
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: front-proxy-nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-proxy
+  namespace: book-store
+spec:
+  type: ClusterIP
+  selector:
+    app: front-proxy
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

@@ -1,0 +1,7 @@
+# Namespace (OpenShift: proyecto) para agrupar todos los recursos del book-store
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: book-store
+  labels:
+    app.kubernetes.io/part-of: book-store

@@ -1,18 +1,23 @@
+# PVC: solicitud de almacenamiento (OpenShift asigna el PV automáticamente)
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
+  namespace: book-store
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-#-----------------
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
+  namespace: book-store
+  labels:
+    app: postgres
 spec:
   replicas: 1
   selector:
@@ -38,20 +43,25 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgres-data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
             claimName: postgres-pvc
-#-----------------
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: postgresq
+  namespace: book-store
 spec:
   type: ClusterIP
   selector:
     app: postgres
-    ports:
-      -port: 5432
+  ports:
+    - protocol: TCP
+      port: 5432
       targetPort: 5432
-

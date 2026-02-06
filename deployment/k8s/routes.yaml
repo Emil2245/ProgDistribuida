@@ -1,0 +1,34 @@
+# Solo 2 Routes expuestas: front (React + API /books) y Grafana.
+# El resto de servicios (authors, books, customers, consul, prometheus) son solo internos.
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: front
+  namespace: book-store
+spec:
+  to:
+    kind: Service
+    name: front-proxy
+    weight: 100
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
+  wildcardPolicy: None
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: grafana
+  namespace: book-store
+spec:
+  to:
+    kind: Service
+    name: grafana
+    weight: 100
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge
+  wildcardPolicy: None

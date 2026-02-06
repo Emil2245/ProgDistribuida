@@ -1,0 +1,15 @@
+# Kustomize: aplicar todo con  oc apply -k deployment/k8s
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: book-store
+resources:
+  - namespace.yaml
+  - postgresql-deployment.yml
+  - consul-deployment.yml
+  - app-authors-deployment.yml
+  - app-books-deployment.yml
+  - app-customers-deployment.yml
+  - app-react-deployment.yml
+  - front-proxy.yaml
+  - prometheus-grafana.yaml
+  - routes.yaml
