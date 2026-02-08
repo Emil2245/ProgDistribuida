@@ -1,7 +1,7 @@
 # Kustomize: aplicar todo con  oc apply -k deployment/k8s
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: book-store
+namespace: etverkade-dev
 resources:
   - namespace.yaml
   - postgresql-deployment.yml

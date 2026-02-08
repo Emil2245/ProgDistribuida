@@ -95,21 +95,21 @@ services:
       - dbserver
       - consul
 
-#  react:
-#    image: emil2245/app-web-react
-#    entrypoint: >
-#      sh -c "curl --request PUT
-#      --data '{\"Name\": \"app-web-react\", \"Address\": \"react\", \"Port\": 80, \"Tags\": [\"traefik.enable=true\", \"traefik.http.routers.react.rule=PathPrefix(`/`)\", \"traefik.http.routers.react.priority=1\"]}'
-#      http://consul:8500/v1/agent/service/register && nginx -g 'daemon off;'"
-#    depends_on:
-#      - consul
   react:
     image: emil2245/app-web-react
-    expose:
-      - 80
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.react.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.react.entrypoints=web"
-      - "traefik.http.routers.react.priority=1"
-      - "traefik.http.services.react.loadbalancer.server.port=80"
+    entrypoint: >
+      sh -c "curl --request PUT
+      --data '{\"Name\": \"app-web-react\", \"Address\": \"react\", \"Port\": 80, \"Tags\": [\"traefik.enable=true\", \"traefik.http.routers.react.rule=PathPrefix(`/`)\", \"traefik.http.routers.react.priority=1\"]}'
+      http://consul:8500/v1/agent/service/register && nginx -g 'daemon off;'"
+    depends_on:
+      - consul
+#  react:
+#    image: emil2245/app-web-react
+#    expose:
+#      - 80
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.react.rule=PathPrefix(`/`)"
+#      - "traefik.http.routers.react.entrypoints=web"
+#      - "traefik.http.routers.react.priority=1"
+#      - "traefik.http.services.react.loadbalancer.server.port=80"

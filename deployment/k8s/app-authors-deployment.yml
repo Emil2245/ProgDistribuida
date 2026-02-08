@@ -1,9 +1,8 @@
-# App Authors (Quarkus) - Deployment + Service
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-authors
-  namespace: book-store
+  namespace: etverkade-dev
   labels:
     app: app-authors
 spec:
@@ -62,7 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: app-authors
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   type: ClusterIP
   selector:
@@ -76,7 +75,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: app-authors-hpa
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

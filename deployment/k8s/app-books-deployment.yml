@@ -1,10 +1,8 @@
-# App Books (Quarkus) - Deployment + Service
-# Depende de postgresq y (para autores/clientes) de Consul o URLs estáticas
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-books
-  namespace: book-store
+  namespace: etverkade-dev
   labels:
     app: app-books
 spec:
@@ -37,12 +35,8 @@ spec:
               value: "consul"
             - name: CONSUL_PORT
               value: "8500"
-            # Orígenes CORS: URL del frontend React (Route en OpenShift) para que el navegador permita llamadas.
             - name: CORS_ORIGINS
-              value: ""   # Ej.: https://react-book-store.<proyecto>.apps.<cluster>
-            # URL directa a authors si no usas Consul (descomenta y comenta CONSUL_*):
-            # - name: AUTHORS_URL
-            #   value: "http://app-authors:8080"
+              value: ""   
           resources:
             requests:
               memory: "256Mi"
@@ -67,7 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: app-books
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   type: ClusterIP
   selector:

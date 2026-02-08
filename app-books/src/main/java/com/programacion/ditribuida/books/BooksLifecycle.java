@@ -45,8 +45,6 @@ public class BooksLifecycle {
 
             var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.books.rule=PathPrefix(`/app-books`)",
-                    // Importante: el router de React es PathPrefix(`/`) con priority=1.
-                    // Si no subimos la prioridad aquí, Traefik puede enviar /app-books al frontend.
                     "traefik.http.routers.books.priority=10",
                     "traefik.http.middlewares.books-stripprefix.stripPrefix.prefixes=/app-books",
                     "traefik.http.routers.books.middlewares=books-stripprefix");

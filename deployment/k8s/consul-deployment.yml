@@ -1,10 +1,8 @@
-# Consul (opcional) - para service discovery entre authors, books y customers
-# Si no lo desplegás, en app-books podés usar descubrimiento estático (AUTHORS_URL, etc.)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: consul
-  namespace: book-store
+  namespace: etverkade-dev
   labels:
     app: consul
 spec:
@@ -21,11 +19,9 @@ spec:
         - name: consul
           image: consul:1.15.4
           command:
-            - agent
-            - -dev
-            - -ui
-            - -bind=0.0.0.0
-            - -client=0.0.0.0
+            - /bin/sh
+            - -c
+            - consul agent -dev -ui -bind=0.0.0.0 -client=0.0.0.0 -data-dir=/tmp/consul
           ports:
             - containerPort: 8500
           resources:
@@ -37,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: consul
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   type: ClusterIP
   selector:

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
     Container,
@@ -11,9 +11,9 @@ import {
     Table, TableHead, TableRow, TableCell, TableBody
 } from "@mui/material";
 
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import type {Book} from "../model/Book.ts";
+import type { Book } from "../model/Book.ts";
 import { apiUrl } from "../config/api.ts";
 
 export default function BooksDetallePage() {
@@ -23,7 +23,7 @@ export default function BooksDetallePage() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const bookInicial : Book = {
+    const bookInicial: Book = {
         isbn: '',
         title: '',
         price: 0,
@@ -47,7 +47,7 @@ export default function BooksDetallePage() {
     };
 
     useEffect(() => {
-        fetchBook().then(() => {});
+        fetchBook().then(() => { });
         console.log("render");
     }, [isbn])
 
@@ -60,7 +60,7 @@ export default function BooksDetallePage() {
 
         //alert(book.title)
         axios.put<Book>(url + '/' + isbn, book)
-            .then(()=>{
+            .then(() => {
                 alert('ok');
             })
             .catch(err => {
@@ -69,7 +69,7 @@ export default function BooksDetallePage() {
     };
 
     return (
-        <Container sx={{mt: 4}}>
+        <Container sx={{ mt: 4 }}>
             <Typography variant="h6">
                 Detalle libro: {isbn}
             </Typography>
@@ -80,9 +80,9 @@ export default function BooksDetallePage() {
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
-                        sx={{width: "100%", maxWidth: 600, mx: "left", mt: 4}}
+                        sx={{ width: "100%", maxWidth: 600, mx: "left", mt: 4 }}
                     >
-                        <Typography variant="h6" sx={{mb: 2}}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
                             Libro
                         </Typography>
 
@@ -118,7 +118,7 @@ export default function BooksDetallePage() {
                             margin="normal"
                         />
 
-                        <Typography variant="h6" sx={{mb: 2}}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
                             Inventario
                         </Typography>
 
@@ -126,7 +126,7 @@ export default function BooksDetallePage() {
                             label="Inventario"
                             name="inventorySupplied"
                             type="number"
-                            value={book.inventorySupplied? book.inventorySupplied : 0}
+                            value={book.inventorySupplied ? book.inventorySupplied : 0}
                             onChange={handleChange}
                             fullWidth
                             required
@@ -137,7 +137,7 @@ export default function BooksDetallePage() {
                             label="Vendidos"
                             name="price"
                             type="number"
-                            value={book.inventorySold? book.inventorySold : 0}
+                            value={book.inventorySold ? book.inventorySold : 0}
                             onChange={handleChange}
                             fullWidth
                             required
@@ -157,8 +157,8 @@ export default function BooksDetallePage() {
                 </Grid>
                 {/* TABLA - DERECHA */}
                 <Grid size={6}>
-                    <Box sx={{width: "100%", maxWidth: 600, mx: "left", mt: 4}}>
-                        <Typography variant="h6" sx={{mb: 2}}>
+                    <Box sx={{ width: "100%", maxWidth: 600, mx: "left", mt: 4 }}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
                             Autores
                         </Typography>
                         <Table>
@@ -172,7 +172,7 @@ export default function BooksDetallePage() {
                                 {/* Solo ejemplo, puedes usar otro array */}
                                 {book.authors?.map((author, index) => (
                                     <TableRow>
-                                        <TableCell>{index+1}</TableCell>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>{author.name}</TableCell>
                                     </TableRow>
                                 ))}

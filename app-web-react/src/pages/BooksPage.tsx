@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
     Container,
@@ -12,9 +12,9 @@ import {
     CircularProgress,
 } from "@mui/material";
 
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import type {Book} from "../model/Book.ts";
+import type { Book } from "../model/Book.ts";
 import { apiUrl } from "../config/api.ts";
 
 export default function BooksPage() {
@@ -45,7 +45,7 @@ export default function BooksPage() {
             isbn: e.currentTarget.textContent
         }
 
-        navigate('/books-detalle', {state: miEstado})
+        navigate('/books-detalle', { state: miEstado })
     }
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function BooksPage() {
     }, [])
 
     return (
-        <Container sx={{mt: 4}}>
+        <Container sx={{ mt: 4 }}>
             <Typography variant="h5" gutterBottom>
                 Libros disponibles
             </Typography>
@@ -67,9 +67,9 @@ export default function BooksPage() {
                 {loading ? "Cargando..." : "Cargar datos"}
             </Button>
 
-            {loading && <CircularProgress sx={{ml: 2}}/>}
+            {loading && <CircularProgress sx={{ ml: 2 }} />}
 
-            <Table sx={{mt: 3}}>
+            <Table sx={{ mt: 3 }}>
                 <TableHead>
                     <TableRow>
                         <TableCell>ISBN</TableCell>

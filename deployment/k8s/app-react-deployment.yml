@@ -1,9 +1,37 @@
-# Frontend React - Deployment + Service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-react-nginx
+  namespace: etverkade-dev
+data:
+  nginx.conf: |
+    pid /tmp/nginx.pid;
+    events { worker_connections 1024; }
+    http {
+      include /etc/nginx/mime.types;
+      default_type application/octet-stream;
+      
+      client_body_temp_path /tmp/client_temp;
+      proxy_temp_path       /tmp/proxy_temp_path;
+      fastcgi_temp_path     /tmp/fastcgi_temp;
+      uwsgi_temp_path       /tmp/uwsgi_temp;
+      scgi_temp_path        /tmp/scgi_temp;
+
+      server {
+        listen 8080;
+        root /usr/share/nginx/html;
+        index index.html;
+        location / {
+          try_files $uri $uri/ /index.html;
+        }
+      }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-react
-  namespace: book-store
+  namespace: etverkade-dev
   labels:
     app: app-react
 spec:
@@ -18,10 +46,13 @@ spec:
     spec:
       containers:
         - name: app-react
-          image: emil2245/app-web-react:latest
+          image: emil2245/app-web-react:v2
           ports:
-            - containerPort: 80
-          # Sin env API_BASE_URL: el front va detrás del proxy (misma origin). Compilá el front con VITE_API_BASE_URL="" (ver README).
+            - containerPort: 8080
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
           resources:
             requests:
               memory: "64Mi"
@@ -29,12 +60,16 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: app-react-nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: app-react
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   type: ClusterIP
   selector:
@@ -42,4 +77,4 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080

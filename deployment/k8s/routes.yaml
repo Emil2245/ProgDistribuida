@@ -1,18 +1,16 @@
-# Solo 2 Routes expuestas: front (React + API /books) y Grafana.
-# El resto de servicios (authors, books, customers, consul, prometheus) son solo internos.
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: front
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   to:
     kind: Service
     name: front-proxy
     weight: 100
   port:
-    targetPort: 80
+    targetPort: http-proxy
   tls:
     termination: edge
   wildcardPolicy: None
@@ -21,7 +19,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: grafana
-  namespace: book-store
+  namespace: etverkade-dev
 spec:
   to:
     kind: Service
