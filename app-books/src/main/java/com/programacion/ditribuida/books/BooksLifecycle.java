@@ -14,9 +14,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class BooksLifecycle {
+
+    private String serviceId;
 
     @Inject
     @ConfigProperty(name = "consul.host", defaultValue = "localhost")
@@ -38,10 +41,10 @@ public class BooksLifecycle {
                     .setPort(consulPort);
 
             var ipAddress = InetAddress.getLocalHost().getHostAddress();
-            // Readiness real (DB + app) para routing y escalado horizontal vía
-            // Consul/Traefik
             var urlcheck = String.format("http://%s:%d/q/health/ready", ipAddress, appPort);
             var checkOptions = new CheckOptions().setHttp(urlcheck).setInterval("10s").setDeregisterAfter("1m");
+
+            ConsulClient client = ConsulClient.create(vertx, options);
 
             var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.books.rule=PathPrefix(`/app-books`)",
@@ -49,11 +52,9 @@ public class BooksLifecycle {
                     "traefik.http.middlewares.books-stripprefix.stripPrefix.prefixes=/app-books",
                     "traefik.http.routers.books.middlewares=books-stripprefix");
 
-            ConsulClient client = ConsulClient.create(vertx, options);
-
             // Necesario para escalado horizontal: el serviceId debe ser único por instancia
             var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
-            String serviceId = "app-books-" + hostname + "-" + appPort;
+            serviceId = "app-books-" + hostname + "-" + UUID.randomUUID().toString().substring(0, 8);
 
             ServiceOptions serviceOptions = new ServiceOptions()
                     .setName("app-books")
@@ -82,10 +83,6 @@ public class BooksLifecycle {
                     .setPort(consulPort);
 
             ConsulClient client = ConsulClient.create(vertx, options);
-
-            var ipAddress = InetAddress.getLocalHost().getHostAddress();
-            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
-            String serviceId = "app-books-" + hostname + "-" + appPort;
 
             client.deregisterService(serviceId)
                     .onSuccess(it -> {

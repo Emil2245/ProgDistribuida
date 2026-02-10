@@ -26,3 +26,8 @@ management:
       probes:
         enabled: true
       show-details: always
+      group:
+        readiness:
+          include: aiApi
+        liveness:
+          include: ping

@@ -57,6 +57,8 @@ public class AuthorRest {
     @GET
     @Path("/find/{isbn}")
     public List<Author> findByBook(@PathParam("isbn") String isbn) {
+        System.out.println(isbn);
+
         return authorRepo.findByBook(isbn).stream()
                 .map(obj -> {
                     var newName = String.format("%s - %s", obj.getName(), httpPort);

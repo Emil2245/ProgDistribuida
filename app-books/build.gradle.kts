@@ -47,6 +47,8 @@ dependencies {
 
     // métricas Prometheus (/q/metrics)
     implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+    implementation("io.quarkus:quarkus-jackson")
+
 
     //kubernetes
     implementation("io.quarkus:quarkus-kubernetes")

@@ -1,7 +1,7 @@
 #
 # Archivo para crear la imagen
-# docker build -f Dockerfile.jvm -t emil2245/app-customers .
-# docker push emil2245/app-customers
+# docker build -t emil2245/app-customers:2.0.0 .
+# docker push emil2245/app-customers:2.0.0
 #
 
 # entorno que va

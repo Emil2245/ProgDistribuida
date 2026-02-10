@@ -14,6 +14,9 @@ spring:
       discovery:
         health-check-path: /actuator/health/readiness
         health-check-interval: 10s
+#        instance-id: ${spring.application.name}:${random.value}
+#        hostname: ${HOSTNAME:localhost}
+#        prefer-ip-address: false
         tags: -framework=spring-boot-4.0.1
           -traefik.enable=true
           -traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)

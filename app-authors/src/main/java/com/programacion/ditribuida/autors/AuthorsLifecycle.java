@@ -14,9 +14,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AuthorsLifecycle {
+
+    private String serviceId;
 
     @Inject
     @ConfigProperty(name = "consul.host", defaultValue = "localhost")
@@ -47,16 +50,12 @@ public class AuthorsLifecycle {
 
             var tags = List.of("traefik.enable=true",
                     "traefik.http.routers.authors.rule=PathPrefix(`/app-authors`)",
-                    // Importante: el router de React es PathPrefix(`/`) con priority=1.
-                    // Si no subimos la prioridad aquí, Traefik puede enviar /app-authors al
-                    // frontend.
                     "traefik.http.routers.authors.priority=10",
                     "traefik.http.middlewares.authors-stripprefix.stripPrefix.prefixes=/app-authors",
                     "traefik.http.routers.authors.middlewares=authors-stripprefix");
 
-            // Necesario para escalado horizontal: el serviceId debe ser único por instancia
             var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
-            String serviceId = "app-authors-" + hostname + "-" + appPort;
+            serviceId = "app-authors-" + hostname + "-" + UUID.randomUUID().toString().substring(0, 8);
 
             ServiceOptions serviceOptions = new ServiceOptions()
                     .setName("app-authors")
@@ -83,10 +82,6 @@ public class AuthorsLifecycle {
             ConsulClientOptions options = new ConsulClientOptions().setHost(consulHost).setPort(consulPort);
 
             ConsulClient client = ConsulClient.create(vertx, options);
-
-            var ipAddress = InetAddress.getLocalHost().getHostAddress();
-            var hostname = System.getenv().getOrDefault("HOSTNAME", ipAddress);
-            String serviceId = "app-authors-" + hostname + "-" + appPort;
 
             client.deregisterService(serviceId).onSuccess(it -> {
                 System.out.println("Service deregistered: " + serviceId);
